@@ -1,0 +1,96 @@
+= Docker Plugin
+:toc: left
+:toc-title: Table of Contents
+
+A Gradle plugin for managing Docker containers seamlessly during the build process. It simplifies starting, stopping, and interacting with Docker containers, making it ideal for integration tests, development environments, and containerized workflows.
+
+== Features
+
+* Start and stop Docker containers directly from Gradle tasks.
+* Support for mapping ports, environment variables, and volumes.
+* Works seamlessly with integration testing workflows.
+* Fully configurable via Gradle DSL.
+* Supports both public and private Docker images.
+
+== Getting Started
+
+=== Applying the Plugin
+
+Add the plugin to your `build.gradle.kts` file:
+
+[source,kotlin]
+----
+plugins {
+    id("de.surala.containertool.docker-plugin") version "1.0.0"
+}
+----
+
+=== Configuration
+
+Define your Docker container in the `docker` block of your `build.gradle` file:
+
+[source,kotlin]
+----
+docker {
+    container {
+        name = "exampleContainer"
+        image = "nginx"
+        tag = "latest"
+        ports[8080] = 80
+        environmentMap["ENV_VAR"] = "value"
+        volumeMap["/host/path"] = "/container/path"
+  }
+}
+----
+
+=== Available Tasks
+|===
+| Task                   | Description
+| `start<ContainerName>` | Starts the specified Docker container.
+| `stop<ContainerName>`  | Stops and removes the container.
+| `restart<ContainerName>`  | Stops and Start the container
+|===
+
+== Example Usage
+
+Here’s an example configuration for a Docker container:
+
+[source,kotlin]
+----
+docker {
+    container {
+        name = "myApp"
+        image = "my-docker-repo/my-app"
+        tag = "v1.0"
+        ports[8080] = 8080
+        environmentMap["SPRING_PROFILES_ACTIVE"] = "dev"
+        volumeMap["/local/config"] = "/app/config"
+    }
+}
+----
+
+Run the tasks:
+
+[source,bash]
+----
+./gradlew startMyApp
+./gradlew stopMyApp
+----
+
+== Advanced Usage
+
+=== Integration Tests
+
+Use this plugin with integration tests by starting a container during test setup and stopping it afterward.
+
+[source,kotlin]
+----
+tasks.test {
+    dependsOn("startMyApp")
+    finalizedBy("stopMyApp")
+}
+----
+
+== License
+
+This plugin is licensed under the MIT License. See `LICENSE` for details.
