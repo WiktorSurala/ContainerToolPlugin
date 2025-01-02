@@ -8,13 +8,13 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.gradle.publish.plugin)
     `java-library`
     `java-gradle-plugin`
     `maven-publish`
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
@@ -22,15 +22,12 @@ group = "de.surala.containertool"
 version = "1.0.0"
 
 dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
     api(libs.commons.math3)
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation(libs.guava)
-
-    testImplementation(gradleTestKit()) // For functional testing
+    testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
-    testImplementation(libs.jupiter) // For Kotlin unit tests
+    testImplementation(libs.jupiter)
 }
 
 tasks.named<Test>("test") {
@@ -40,7 +37,6 @@ tasks.named<Test>("test") {
     }
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
     withSourcesJar()
     toolchain {
@@ -49,16 +45,16 @@ java {
 }
 
 gradlePlugin {
+    website.set("https://github.com/WiktorSurala/ContainerToolPlugin")
+    vcsUrl.set("https://github.com/WiktorSurala/ContainerToolPlugin")
+
     plugins {
         create("dockerPlugin") {
             id = "de.surala.containertool.docker-plugin"
+            displayName = "Docker Container Plugin"
+            description = "A Gradle plugin for managing Docker containers."
             implementationClass = "de.surala.containertool.dockerplugin.DockerPlugin"
+            tags.set(listOf("docker", "container", "manage"))
         }
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
     }
 }
