@@ -45,9 +45,8 @@ java {
 }
 
 gradlePlugin {
-    website.set("https://github.com/WiktorSurala/ContainerToolPlugin")
+    website.set("https://www.surala.de")
     vcsUrl.set("https://github.com/WiktorSurala/ContainerToolPlugin")
-
     plugins {
         create("dockerPlugin") {
             id = "de.surala.containertool.docker-plugin"
@@ -56,5 +55,11 @@ gradlePlugin {
             implementationClass = "de.surala.containertool.dockerplugin.DockerPlugin"
             tags.set(listOf("docker", "container", "manage"))
         }
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
     }
 }
